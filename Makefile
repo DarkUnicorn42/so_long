@@ -11,49 +11,59 @@
 # **************************************************************************** #
 
 NAME = so_long
+
 CC = clang
-CFLAGS = -Wall -Wextra -Werror -Iincludes
-SRCS = src/main.c src/game.c src/graphics.c src/map.c
-OBJS = $(SRCS:.c=.o)
+CFLAGS = -Wall -Wextra -Werror -I./include/
 
-# Paths
-LIBFT_DIR = libft
-LIBFT = $(LIBFT_DIR)/libft.a
-MLX_DIR = mlx_linux
-MLX_LIB = $(MLX_DIR)/libmlx.a
-MLX_FLAGS = -Lmlx_linux -L/usr/lib -Imlx_linux -lmlx -lXext -lX11 -lm -lz -D LINUX -no-pie
+MLXFLAGSO = -I/usr/include -Imlx_linux -O3
+MLXFLAGSN = -Lmlx_linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -D LINUX -no-pie
 
-# Rule to build object files
-%.o: %.c
-	$(CC) $(CFLAGS) $(MLX_FLAGS) -c $< -o $@
+LIBFT_DIR = libft/
+MLX_DIR = mlx_linux/
+UTILS_DIR = src/utils/
 
-# Rule to build the libft library
-$(LIBFT):
-	$(MAKE) -C $(LIBFT_DIR)
+FILES = \
+		src/game.c \
+		src/graphics.c \
+		src/so_long.c \
+		src/map.c \
 
-# Rule to build the MiniLibX library
-$(MLX_LIB):
-	$(MAKE) -C $(MLX_DIR)
-
-comp_libs:
-	@make -C $(LIBFT)
-	@make -C $(MLX_DIR)
-
-$(NAME): comp_libs $(OBJS)
-	$(CC) $(CFLAGS) $(MLX_FLAGS) $(OBJS) $(LIBFT) $(MLX_LIB) -o $(NAME)
+OBJS = ${FILES:.c=.o}
 
 all: $(NAME)
 
+%.o: %.c
+	$(CC) $(CFLAGS) $(MLXFLAGSO) -c $< -o ${<:.c=.o}
+
+compile_dep:
+	@make -C $(MLX_DIR)
+	@cp $(MLX_DIR)/libmlx.a .
+	@cp $(MLX_DIR)/libmlx_Linux.a .
+	@mv $(MLX_DIR)/libmlx.a .
+	@mv $(MLX_DIR)/libmlx_Linux.a .
+	@make -C $(LIBFT_DIR)
+	@cp $(LIBFT_DIR)/libft.a .
+	@mv $(LIBFT_DIR)/libft.a .
+	echo "\n\n" $(OBJS) "\n\n"
+
+$(NAME): compile_dep $(OBJS)
+	$(CC) $(CFLAGS) $(MLXFLAGSN) $(OBJS) libft.a libmlx.a libmlx_Linux.a -o $(NAME)
+
+
 clean:
-	@rm -f $(OBJS)
-	@$(MAKE) -C $(LIBFT_DIR) clean
-	@$(MAKE) -C $(MLX_DIR) clean
+	rm -f $(OBJS)
+	@make -C $(LIBFT_DIR) clean
+	@make -C $(MLX_DIR) clean
+	@make -C $(MLX_TRANS) clean
+
 
 fclean: clean
-	@rm -f $(NAME)
-	@$(MAKE) -C $(LIBFT_DIR) fclean
-	@$(MAKE) -C $(MLX_DIR) clean
+	rm -f $(NAME)
+	rm -f libmlx.a
+	rm -f libmlx_Linux.a
+	rm -f libft.a
+	rm -f libtransparency.a
 
-re: fclean all
+re: all
 
 .PHONY: all clean fclean re
