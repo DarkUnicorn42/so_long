@@ -27,6 +27,7 @@ FILES = \
 		src/graphics.c \
 		src/so_long.c \
 		src/map.c \
+		src/utils.c \
 
 OBJS = ${FILES:.c=.o}
 
@@ -54,15 +55,12 @@ clean:
 	rm -f $(OBJS)
 	@make -C $(LIBFT_DIR) clean
 	@make -C $(MLX_DIR) clean
-	@make -C $(MLX_TRANS) clean
-
 
 fclean: clean
 	rm -f $(NAME)
 	rm -f libmlx.a
 	rm -f libmlx_Linux.a
 	rm -f libft.a
-	rm -f libtransparency.a
 
 re: all
 

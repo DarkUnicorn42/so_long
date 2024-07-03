@@ -18,19 +18,27 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <stdio.h>
-
-# define WIDTH 800
-# define HEIGHT 600
+# include "../libft/libft.h"
 
 typedef struct s_game
 {
 	void	*mlx;
 	void	*win;
-	// Add other game-related variables here
+	int		width;
+	int		height;
+	char	**map;
+	int		move_count;
+	void	*img_wall;
+	void	*img_floor;
+	void	*img_collect;
+	void	*img_exit;
+	void	*img_player;
 }	t_game;
 
 int		parse_map(const char *file, t_game *game);
 void	init_game(t_game *game);
 int		key_press(int keycode, t_game *game);
+void	render_map(t_game *game);
+void	error_exit(const char *msg);
 
 #endif

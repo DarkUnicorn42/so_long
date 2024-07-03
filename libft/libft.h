@@ -15,6 +15,11 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <limits.h>
+# include <fcntl.h>
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 40
+# endif
 
 int		ft_atoi(const char *nptr);
 int		ft_isalpha(int c);
@@ -53,3 +58,4 @@ size_t	ft_strlen(const char *str);
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 size_t	ft_strlcat(char *dst, const char *src, size_t size);
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
+char	*get_next_line(int fd);

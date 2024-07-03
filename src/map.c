@@ -12,28 +12,70 @@
 
 #include "../include/so_long.h"
 
-int	parse_map(const char *file, t_game *game)
+int	get_map_dimensions(const char *file, t_game *game)
 {
 	int		fd;
-	char	buffer[1024]; // Adjust buffer size as needed
-	int		ret;
+	char	*line;
+	int		width;
+	int		height;
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
+		error_exit("Error opening map file");
+	height = 0;
+	game->width = 0;
+	while ((line = get_next_line(fd)))
 	{
-		perror("Error opening map file");
-		return (-1);
+		width = ft_strlen(line);
+		if (line[width - 1] == '\n')
+			width--;
+		// printf("Line: %s", line); // Debug output to see the line content
+		// printf("Width: %d, Height: %d\n", width, height); // Debug output for width and height
+		if (game->width == 0)
+			game->width = width;
+		else if (width != game->width)
+		{
+			printf("Mismatched line width: expected %d, got %d\n", game->width, width);
+			free(line);
+			close(fd);
+			return (-1);
+		}
+		height++;
+		free(line);
 	}
-	ret = read(fd, buffer, sizeof(buffer));
-	if (ret < 0)
-	{
-		perror("Error reading map file");
-		close(fd);
-		return (-1);
-	}
-	buffer[ret] = '\0';
 	close(fd);
-	// Add logic to parse the map and initialize game variables
-	(void)game; // Placeholder to avoid unused parameter warning
+	game->height = height;
+	if (game->height == 0 || game->width == 0)
+	{
+		error_exit("Error: Empty or invalid map");
+	}
+	return (0);
+}
+
+int	parse_map(const char *file, t_game *game)
+{
+	int		fd;
+	char	*line;
+	int		row;
+
+	if (get_map_dimensions(file, game) == -1)
+		return (-1);
+	game->map = (char **)malloc(sizeof(char *) * (game->height + 1));
+	if (!game->map)
+		error_exit("Error allocating memory for map");
+	fd = open(file, O_RDONLY);
+	if (fd < 0)
+		error_exit("Error opening map file");
+	row = 0;
+	while ((line = get_next_line(fd)))
+	{
+		game->map[row] = ft_strdup(line);
+		free(line);
+		if (!game->map[row])
+			error_exit("Error duplicating map line");
+		row++;
+	}
+	game->map[row] = NULL;
+	close(fd);
 	return (0);
 }
