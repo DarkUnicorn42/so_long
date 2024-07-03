@@ -28,6 +28,8 @@ typedef struct s_game
 	int		height;
 	char	**map;
 	int		move_count;
+	int		total_items;
+	int		collected_items;
 	void	*img_wall;
 	void	*img_floor;
 	void	*img_collect;
@@ -39,6 +41,9 @@ int		parse_map(const char *file, t_game *game);
 void	init_game(t_game *game);
 int		key_press(int keycode, t_game *game);
 void	render_map(t_game *game);
+int		get_map_dimensions(const char *file, t_game *game);
+char	*get_next_line(int fd);
 void	error_exit(const char *msg);
+int		close_window(t_game *game);
 
 #endif

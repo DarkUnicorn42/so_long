@@ -26,8 +26,8 @@ int	get_map_dimensions(const char *file, t_game *game)
 	game->width = 0;
 	while ((line = get_next_line(fd)))
 	{
-		width = ft_strlen(line);
-		if (line[width - 1] == '\n')
+		width = ft_strlen(line) - 1;
+		if (line[width] == '\n')
 			width--;
 		// printf("Line: %s", line); // Debug output to see the line content
 		// printf("Width: %d, Height: %d\n", width, height); // Debug output for width and height
