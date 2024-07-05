@@ -34,6 +34,7 @@ typedef struct s_game
 	void	*img_floor;
 	void	*img_collect;
 	void	*img_exit;
+	void	*img_exit_open;
 	void	*img_player;
 }	t_game;
 
@@ -45,5 +46,7 @@ int		get_map_dimensions(const char *file, t_game *game);
 char	*get_next_line(int fd);
 void	error_exit(const char *msg);
 int		close_window(t_game *game);
+void	check_walls(t_game *game);
+void	count_elements(t_game *game);
 
 #endif

@@ -24,7 +24,6 @@ void	render_map(t_game *game)
 		x = 0;
 		while (x < game->width)
 		{
-			// printf("Rendering tile at (%d, %d): %c\n", x, y, game->map[y][x]); // Debug print
 			if (game->map[y][x] == '1')
 				mlx_put_image_to_window(game->mlx, game->win, game->img_wall, x * 100, y * 100);
 			else if (game->map[y][x] == '0')
@@ -32,7 +31,12 @@ void	render_map(t_game *game)
 			else if (game->map[y][x] == 'C')
 				mlx_put_image_to_window(game->mlx, game->win, game->img_collect, x * 100, y * 100);
 			else if (game->map[y][x] == 'E')
-				mlx_put_image_to_window(game->mlx, game->win, game->img_exit, x * 100, y * 100);
+			{
+				if (game->collected_items == game->total_items)
+					mlx_put_image_to_window(game->mlx, game->win, game->img_exit_open, x * 100, y * 100);
+				else
+					mlx_put_image_to_window(game->mlx, game->win, game->img_exit, x * 100, y * 100);
+			}
 			else if (game->map[y][x] == 'P')
 				mlx_put_image_to_window(game->mlx, game->win, game->img_player, x * 100, y * 100);
 			x++;
@@ -58,7 +62,29 @@ void	move_player(t_game *game, int new_x, int new_y)
 				tmp = game->map[new_y][new_x];
 				if (tmp != '1')
 				{
-					game->map[new_y][new_x] = 'P';
+					if (tmp == 'C')
+					{
+						game->collected_items++;
+						game->map[new_y][new_x] = 'P';
+					}
+					else if (tmp == 'E')
+					{
+						if (game->collected_items == game->total_items)
+						{
+							printf("Congratulations! You collected all items and exited the game.\n");
+							mlx_destroy_window(game->mlx, game->win);
+							exit(0);
+						}
+						else
+						{
+							printf("You need to collect all items before exiting!\n");
+							return;
+						}
+					}
+					else
+					{
+						game->map[new_y][new_x] = 'P';
+					}
 					game->map[old_y][old_x] = '0';
 					game->move_count++;
 					printf("Moves: %d\n", game->move_count);
@@ -79,7 +105,6 @@ int	key_press(int keycode, t_game *game)
 
 	player_x = -1;
 	player_y = -1;
-	// Locate player position
 	for (int y = 0; y < game->height; y++)
 	{
 		for (int x = 0; x < game->width; x++)
@@ -94,19 +119,26 @@ int	key_press(int keycode, t_game *game)
 		if (player_x != -1 && player_y != -1)
 			break;
 	}
-
-	if (keycode == 65307) // Escape key
+	if (keycode == 65307)
 	{
 		mlx_destroy_window(game->mlx, game->win);
 		exit(0);
 	}
-	else if (keycode == 119) // W key
+	else if (keycode == 119)
 		move_player(game, player_x, player_y - 1);
-	else if (keycode == 115) // S key
+	else if (keycode == 115)
 		move_player(game, player_x, player_y + 1);
-	else if (keycode == 97)  // A key
+	else if (keycode == 97)
 		move_player(game, player_x - 1, player_y);
-	else if (keycode == 100) // D key
+	else if (keycode == 100)
 		move_player(game, player_x + 1, player_y);
 	return (0);
 }
+
+/*
+** keycode == 65307  Escape key
+** keycode == 119    W key
+** keycode == 115    S key
+** keycode == 97     A key
+** keycode == 100    D key
+*/

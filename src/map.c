@@ -26,11 +26,9 @@ int	get_map_dimensions(const char *file, t_game *game)
 	game->width = 0;
 	while ((line = get_next_line(fd)))
 	{
-		width = ft_strlen(line) - 1;
-		if (line[width] == '\n')
+		width = ft_strlen(line) - 2;
+		if (line[width - 1] == '\n')
 			width--;
-		// printf("Line: %s", line); // Debug output to see the line content
-		// printf("Width: %d, Height: %d\n", width, height); // Debug output for width and height
 		if (game->width == 0)
 			game->width = width;
 		else if (width != game->width)
@@ -46,10 +44,69 @@ int	get_map_dimensions(const char *file, t_game *game)
 	close(fd);
 	game->height = height;
 	if (game->height == 0 || game->width == 0)
-	{
 		error_exit("Error: Empty or invalid map");
-	}
 	return (0);
+}
+
+void	count_elements(t_game *game)
+{
+	int	row;
+	int	col;
+	int	collectibles;
+	int	exits;
+	int	players;
+
+	collectibles = 0;
+	exits = 0;
+	players = 0;
+	row = 0;
+	while (row < game->height)
+	{
+		col = 0;
+		while (col < game->width)
+		{
+			if (game->map[row][col] == 'C')
+				collectibles++;
+			else if (game->map[row][col] == 'E')
+				exits++;
+			else if (game->map[row][col] == 'P')
+				players++;
+			col++;
+		}
+		row++;
+	}
+	if (collectibles == 0)
+		error_exit("Error: No collectibles found on the map");
+	if (exits != 1)
+		error_exit("Error: There must be exactly one exit on the map");
+	if (players != 1)
+		error_exit("Error: There must be exactly one player on the map");
+
+	game->total_items = collectibles;
+}
+
+void	check_walls(t_game *game)
+{
+	int	i;
+
+	i = 0;
+	while (i < game->width)
+	{
+		if (game->map[0][i] != '1')
+			error_exit("Error: Map is not enclosed with walls at the first row");
+		if (game->map[game->height - 1][i] != '1')
+			error_exit("Error: Map is not enclosed with walls at the last row");
+		i++;
+	}
+	i = 0;
+	while (i < game->height)
+	{
+		if (game->map[i][0] != '1')
+			error_exit("Error: Map is not enclosed with walls at the first column, width");
+		if (game->map[i][game->width - 1] != '1')
+			error_exit("Error: Map is not enclosed with walls at the last column");
+		i++;
+	}
 }
 
 int	parse_map(const char *file, t_game *game)
@@ -69,13 +126,17 @@ int	parse_map(const char *file, t_game *game)
 	row = 0;
 	while ((line = get_next_line(fd)))
 	{
-		game->map[row] = ft_strdup(line);
-		free(line);
+		game->map[row] = ft_strtrim(line, "\n");
 		if (!game->map[row])
 			error_exit("Error duplicating map line");
+		free(line);
 		row++;
 	}
 	game->map[row] = NULL;
 	close(fd);
+
+	count_elements(game);
+	check_walls(game);
+
 	return (0);
 }
