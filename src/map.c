@@ -137,6 +137,7 @@ int	parse_map(const char *file, t_game *game)
 
 	count_elements(game);
 	check_walls(game);
+	validate_paths(game);
 
 	return (0);
 }

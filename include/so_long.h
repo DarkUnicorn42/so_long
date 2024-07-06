@@ -48,5 +48,8 @@ void	error_exit(const char *msg);
 int		close_window(t_game *game);
 void	check_walls(t_game *game);
 void	count_elements(t_game *game);
+void validate_paths(t_game *game);
+void find_player_start(t_game *game, int *start_x, int *start_y);
+void dfs(char **map, int **visited, int x, int y, int width, int height);
 
 #endif
