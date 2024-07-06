@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../include/so_long.h"
 
 void	render_map(t_game *game)
@@ -45,28 +44,20 @@ void	render_map(t_game *game)
 	}
 }
 
-void find_player_position(t_game *game, int *player_x, int *player_y)
+int handle_exit(t_game *game)
 {
-	int y;
-	int x;
-
-	y = 0;
-	while (y < game->height)
+	if (game->collected_items == game->total_items)
 	{
-		x = 0;
-		while (x < game->width)
-		{
-			if (game->map[y][x] == 'P')
-			{
-				*player_x = x;
-				*player_y = y;
-				return;
-			}
-			x++;
-		}
-		y++;
+		printf("Congratulations! You collected all items and exited the game.\n");
+		mlx_destroy_window(game->mlx, game->win);
+		exit(0);
 	}
-	error_exit("Error: Player position not found");
+	else
+	{
+		printf("You need to collect all items before exiting!\n");
+		return (0);
+	}
+	return (1);
 }
 
 void handle_move(t_game *game, int old_x, int old_y, int new_x, int new_y)
@@ -81,24 +72,10 @@ void handle_move(t_game *game, int old_x, int old_y, int new_x, int new_y)
 			game->collected_items++;
 			game->map[new_y][new_x] = 'P';
 		}
-		else if (tmp == 'E')
-		{
-			if (game->collected_items == game->total_items)
-			{
-				printf("Congratulations! You collected all items and exited the game.\n");
-				mlx_destroy_window(game->mlx, game->win);
-				exit(0);
-			}
-			else
-			{
-				printf("You need to collect all items before exiting!\n");
-				return;
-			}
-		}
+		else if (tmp == 'E' && !handle_exit(game))
+			return;
 		else
-		{
 			game->map[new_y][new_x] = 'P';
-		}
 		game->map[old_y][old_x] = '0';
 		game->move_count++;
 		printf("Moves: %d\n", game->move_count);
@@ -114,33 +91,3 @@ void move_player(t_game *game, int new_x, int new_y)
 	find_player_position(game, &old_x, &old_y);
 	handle_move(game, old_x, old_y, new_x, new_y);
 }
-
-int key_press(int keycode, t_game *game)
-{
-	int player_x;
-	int player_y;
-
-	find_player_position(game, &player_x, &player_y);
-	if (keycode == 65307)
-	{
-		mlx_destroy_window(game->mlx, game->win);
-		exit(0);
-	}
-	else if (keycode == 119)
-		move_player(game, player_x, player_y - 1);
-	else if (keycode == 115)
-		move_player(game, player_x, player_y + 1);
-	else if (keycode == 97)
-		move_player(game, player_x - 1, player_y);
-	else if (keycode == 100)
-		move_player(game, player_x + 1, player_y);
-	return (0);
-}
-
-/*
-** keycode == 65307  Escape key
-** keycode == 119    W key
-** keycode == 115    S key
-** keycode == 97     A key
-** keycode == 100    D key
-*/

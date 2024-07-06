@@ -90,7 +90,6 @@ void validate_paths(t_game *game)
 }
 
 /*
-
 void validate_paths(t_game *game)
 {
 	int start_x;

@@ -12,6 +12,36 @@
 
 #include "../include/so_long.h"
 
+int key_press(int keycode, t_game *game)
+{
+	int		player_x;
+	int		player_y;
+
+	find_player_position(game, &player_x, &player_y);
+	if (keycode == 65307)
+	{
+		mlx_destroy_window(game->mlx, game->win);
+		exit(0);
+	}
+	else if (keycode == 119)
+		move_player(game, player_x, player_y - 1);
+	else if (keycode == 115)
+		move_player(game, player_x, player_y + 1);
+	else if (keycode == 97)
+		move_player(game, player_x - 1, player_y);
+	else if (keycode == 100)
+		move_player(game, player_x + 1, player_y);
+	return (0);
+}
+
+/*
+** keycode == 65307  Escape key
+** keycode == 119    W key
+** keycode == 115    S key
+** keycode == 97     A key
+** keycode == 100    D key
+*/
+
 void load_textures(t_game *game)
 {
 	int img_width;
