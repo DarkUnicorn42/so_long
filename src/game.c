@@ -12,7 +12,7 @@
 
 #include "../include/so_long.h"
 
-
+void load_textures(t_game *game)
 {
 	int img_width;
 	int img_height;
