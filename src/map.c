@@ -12,16 +12,12 @@
 
 #include "../include/so_long.h"
 
-int	get_map_dimensions(const char *file, t_game *game)
+int set_height_width(int fd, t_game *game)
 {
-	int		fd;
 	char	*line;
 	int		width;
 	int		height;
 
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-		error_exit("Error opening map file");
 	height = 0;
 	game->width = 0;
 	while ((line = get_next_line(fd)))
@@ -35,78 +31,28 @@ int	get_map_dimensions(const char *file, t_game *game)
 		{
 			printf("Mismatched line width: expected %d, got %d\n", game->width, width);
 			free(line);
-			close(fd);
 			return (-1);
 		}
 		height++;
 		free(line);
 	}
-	close(fd);
 	game->height = height;
-	if (game->height == 0 || game->width == 0)
-		error_exit("Error: Empty or invalid map");
 	return (0);
 }
 
-void	count_elements(t_game *game)
+int get_map_dimensions(const char *file, t_game *game)
 {
-	int	row;
-	int	col;
-	int	collectibles;
-	int	exits;
-	int	players;
+	int fd;
+	int result;
 
-	collectibles = 0;
-	exits = 0;
-	players = 0;
-	row = 0;
-	while (row < game->height)
-	{
-		col = 0;
-		while (col < game->width)
-		{
-			if (game->map[row][col] == 'C')
-				collectibles++;
-			else if (game->map[row][col] == 'E')
-				exits++;
-			else if (game->map[row][col] == 'P')
-				players++;
-			col++;
-		}
-		row++;
-	}
-	if (collectibles == 0)
-		error_exit("Error: No collectibles found on the map");
-	if (exits != 1)
-		error_exit("Error: There must be exactly one exit on the map");
-	if (players != 1)
-		error_exit("Error: There must be exactly one player on the map");
-
-	game->total_items = collectibles;
-}
-
-void	check_walls(t_game *game)
-{
-	int	i;
-
-	i = 0;
-	while (i < game->width)
-	{
-		if (game->map[0][i] != '1')
-			error_exit("Error: Map is not enclosed with walls at the first row");
-		if (game->map[game->height - 1][i] != '1')
-			error_exit("Error: Map is not enclosed with walls at the last row");
-		i++;
-	}
-	i = 0;
-	while (i < game->height)
-	{
-		if (game->map[i][0] != '1')
-			error_exit("Error: Map is not enclosed with walls at the first column, width");
-		if (game->map[i][game->width - 1] != '1')
-			error_exit("Error: Map is not enclosed with walls at the last column");
-		i++;
-	}
+	fd = open(file, O_RDONLY);
+	if (fd < 0)
+		error_exit("Error opening map file");
+	result = set_height_width(fd, game);
+	close(fd);
+	if (result == -1 || game->height == 0 || game->width == 0)
+		error_exit("Error: Empty or invalid map");
+	return (0);
 }
 
 int	parse_map(const char *file, t_game *game)
@@ -134,10 +80,8 @@ int	parse_map(const char *file, t_game *game)
 	}
 	game->map[row] = NULL;
 	close(fd);
-
 	count_elements(game);
 	check_walls(game);
 	validate_paths(game);
-
 	return (0);
 }

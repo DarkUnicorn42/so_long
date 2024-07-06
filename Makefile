@@ -28,6 +28,8 @@ FILES = \
 		src/so_long.c \
 		src/map.c \
 		src/utils.c \
+		src/validation.c \
+		src/dfs.c \
 
 OBJS = ${FILES:.c=.o}
 

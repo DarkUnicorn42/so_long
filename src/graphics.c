@@ -45,80 +45,82 @@ void	render_map(t_game *game)
 	}
 }
 
-void	move_player(t_game *game, int new_x, int new_y)
+void find_player_position(t_game *game, int *player_x, int *player_y)
 {
-	int		old_x;
-	int		old_y;
-	char	tmp;
+	int y;
+	int x;
 
-	old_y = 0;
-	while (old_y < game->height)
+	y = 0;
+	while (y < game->height)
 	{
-		old_x = 0;
-		while (old_x < game->width)
-		{
-			if (game->map[old_y][old_x] == 'P')
-			{
-				tmp = game->map[new_y][new_x];
-				if (tmp != '1')
-				{
-					if (tmp == 'C')
-					{
-						game->collected_items++;
-						game->map[new_y][new_x] = 'P';
-					}
-					else if (tmp == 'E')
-					{
-						if (game->collected_items == game->total_items)
-						{
-							printf("Congratulations! You collected all items and exited the game.\n");
-							mlx_destroy_window(game->mlx, game->win);
-							exit(0);
-						}
-						else
-						{
-							printf("You need to collect all items before exiting!\n");
-							return;
-						}
-					}
-					else
-					{
-						game->map[new_y][new_x] = 'P';
-					}
-					game->map[old_y][old_x] = '0';
-					game->move_count++;
-					printf("Moves: %d\n", game->move_count);
-					render_map(game);
-				}
-				return;
-			}
-			old_x++;
-		}
-		old_y++;
-	}
-}
-
-int	key_press(int keycode, t_game *game)
-{
-	int		player_x;
-	int		player_y;
-
-	player_x = -1;
-	player_y = -1;
-	for (int y = 0; y < game->height; y++)
-	{
-		for (int x = 0; x < game->width; x++)
+		x = 0;
+		while (x < game->width)
 		{
 			if (game->map[y][x] == 'P')
 			{
-				player_x = x;
-				player_y = y;
-				break;
+				*player_x = x;
+				*player_y = y;
+				return;
+			}
+			x++;
+		}
+		y++;
+	}
+	error_exit("Error: Player position not found");
+}
+
+void handle_move(t_game *game, int old_x, int old_y, int new_x, int new_y)
+{
+	char tmp;
+
+	tmp = game->map[new_y][new_x];
+	if (tmp != '1')
+	{
+		if (tmp == 'C')
+		{
+			game->collected_items++;
+			game->map[new_y][new_x] = 'P';
+		}
+		else if (tmp == 'E')
+		{
+			if (game->collected_items == game->total_items)
+			{
+				printf("Congratulations! You collected all items and exited the game.\n");
+				mlx_destroy_window(game->mlx, game->win);
+				exit(0);
+			}
+			else
+			{
+				printf("You need to collect all items before exiting!\n");
+				return;
 			}
 		}
-		if (player_x != -1 && player_y != -1)
-			break;
+		else
+		{
+			game->map[new_y][new_x] = 'P';
+		}
+		game->map[old_y][old_x] = '0';
+		game->move_count++;
+		printf("Moves: %d\n", game->move_count);
+		render_map(game);
 	}
+}
+
+void move_player(t_game *game, int new_x, int new_y)
+{
+	int old_x;
+	int old_y;
+
+	find_player_position(game, &old_x, &old_y);
+	handle_move(game, old_x, old_y, new_x, new_y);
+}
+
+int key_press(int keycode, t_game *game)
+{
+	int player_x;
+	int player_y;
+
+	find_player_position(game, &player_x, &player_y);
 	if (keycode == 65307)
 	{
 		mlx_destroy_window(game->mlx, game->win);
