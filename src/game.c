@@ -12,7 +12,7 @@
 
 #include "../include/so_long.h"
 
-int key_press(int keycode, t_game *game)
+int	key_press(int keycode, t_game *game)
 {
 	int		player_x;
 	int		player_y;
@@ -41,38 +41,50 @@ int key_press(int keycode, t_game *game)
 ** keycode == 97     A key
 ** keycode == 100    D key
 */
+/*
+** x = width
+** y = height
+*/
 
-void load_textures(t_game *game)
+void	*xpm_to_img(t_game *game, char *path)
 {
-	int img_width;
-	int img_height;
+	int		x;
+	int		y;
+	void	*p;
 
-	game->img_wall = mlx_xpm_file_to_image(game->mlx, "./textures/wall.xpm", &img_width, &img_height);
+	p = mlx_xpm_file_to_image(game->mlx, path, &x, &y);
+	return (p);
+}
+
+void	load_textures(t_game *game)
+{
+	game->img_wall = xpm_to_img(game, "./textures/wall.xpm");
 	if (!game->img_wall)
 		error_exit("Error loading wall texture");
-	game->img_floor = mlx_xpm_file_to_image(game->mlx, "./textures/bg.xpm", &img_width, &img_height);
+	game->img_floor = xpm_to_img(game, "./textures/bg.xpm");
 	if (!game->img_floor)
 		error_exit("Error loading floor texture");
-	game->img_collect = mlx_xpm_file_to_image(game->mlx, "./textures/coin.xpm", &img_width, &img_height);
+	game->img_collect = xpm_to_img(game, "./textures/coin.xpm");
 	if (!game->img_collect)
 		error_exit("Error loading collectible texture");
-	game->img_exit = mlx_xpm_file_to_image(game->mlx, "./textures/exit.xpm", &img_width, &img_height);
+	game->img_exit = xpm_to_img(game, "./textures/exit.xpm");
 	if (!game->img_exit)
 		error_exit("Error loading exit texture");
-	game->img_exit_open = mlx_xpm_file_to_image(game->mlx, "./textures/exit_open.xpm", &img_width, &img_height);
+	game->img_exit_open = xpm_to_img(game, "./textures/exit_open.xpm");
 	if (!game->img_exit_open)
 		error_exit("Error loading open exit texture");
-	game->img_player = mlx_xpm_file_to_image(game->mlx, "./textures/player.xpm", &img_width, &img_height);
+	game->img_player = xpm_to_img(game, "./textures/player.xpm");
 	if (!game->img_player)
 		error_exit("Error loading player texture");
 }
 
-void init_game(t_game *game)
+void	init_game(t_game *game)
 {
 	game->mlx = mlx_init();
 	if (!game->mlx)
 		error_exit("Error initializing MLX");
-	game->win = mlx_new_window(game->mlx, game->width * 100, game->height * 100, "so_long");
+	game->win = mlx_new_window(game->mlx, game->width * 100,
+			game->height * 100, "so_long");
 	if (!game->win)
 		error_exit("Error creating window");
 	game->move_count = 0;

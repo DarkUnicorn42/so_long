@@ -36,10 +36,14 @@ typedef struct s_game
 	void	*img_exit;
 	void	*img_exit_open;
 	void	*img_player;
+	int		coins;
+	int		exits;
+	int		player;
 }	t_game;
 
 /* Game */
 void	init_game(t_game *game);
+void	*xpm_to_img(t_game *game, char *path);
 void	load_textures(t_game *game);
 int		key_press(int keycode, t_game *game);
 
@@ -60,15 +64,15 @@ int		close_window(t_game *game);
 void	find_player_position(t_game *game, int *player_x, int *player_y);
 
 /* Validation */
-void	count_elements_in_row(char *row, int width, int *collectibles, int *exits, int *players);
+void	count_in_row(char *row, int width, t_game *game);
 void	count_elements(t_game *game);
 void	check_walls(t_game *game);
 
 /* DFS */
-void	dfs(char **map, int **visited, int x, int y, int width, int height);
+void	dfs(int **v, int x, int y, t_game *game);
 int		**init_visited(int width, int height);
 void	free_visited(int **visited, int height);
-void	validate_reach(t_game *game, int **visited);
+void	validate_reach(t_game *game, int **v);
 void	validate_paths(t_game *game);
 
 #endif

@@ -1,44 +1,54 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   validation.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mwojtcza <mwojtcza@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/07 16:08:14 by mwojtcza          #+#    #+#             */
+/*   Updated: 2024/07/07 16:08:14 by mwojtcza         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/so_long.h"
 
-void count_elements_in_row(char *row, int width, int *collectibles, int *exits, int *players)
+void	count_in_row(char *row, int width, t_game *game)
 {
-	int col = 0;
+	int	col;
 
+	col = 0;
 	while (col < width)
 	{
 		if (row[col] == 'C')
-			(*collectibles)++;
+			game->coins++;
 		else if (row[col] == 'E')
-			(*exits)++;
+			game->exits++;
 		else if (row[col] == 'P')
-			(*players)++;
+			game->player++;
 		col++;
 	}
 }
 
-void count_elements(t_game *game)
+void	count_elements(t_game *game)
 {
 	int	row;
-	int	collectibles;
-	int	exits;
-	int	players;
 
-	collectibles = 0;
-	exits = 0;
-	players = 0;
+	game->coins = 0;
+	game->exits = 0;
+	game->player = 0;
 	row = 0;
 	while (row < game->height)
 	{
-		count_elements_in_row(game->map[row], game->width, &collectibles, &exits, &players);
+		count_in_row(game->map[row], game->width, game);
 		row++;
 	}
-	if (collectibles == 0)
-		error_exit("Error: No collectibles found on the map");
-	if (exits != 1)
+	if (game->coins == 0)
+		error_exit("Error: No coins found on the map");
+	if (game->exits != 1)
 		error_exit("Error: There must be exactly one exit on the map");
-	if (players != 1)
+	if (game->player != 1)
 		error_exit("Error: There must be exactly one player on the map");
-	game->total_items = collectibles;
+	game->total_items = game->coins;
 }
 
 void	check_walls(t_game *game)
@@ -49,18 +59,18 @@ void	check_walls(t_game *game)
 	while (i < game->width)
 	{
 		if (game->map[0][i] != '1')
-			error_exit("Error: Map is not enclosed with walls at the first row");
+			error_exit("Error: Walls at the first row");
 		if (game->map[game->height - 1][i] != '1')
-			error_exit("Error: Map is not enclosed with walls at the last row");
+			error_exit("Error: Walls at the last row");
 		i++;
 	}
 	i = 0;
 	while (i < game->height)
 	{
 		if (game->map[i][0] != '1')
-			error_exit("Error: Map is not enclosed with walls at the first column, width");
+			error_exit("Error: Walls at the first column, width");
 		if (game->map[i][game->width - 1] != '1')
-			error_exit("Error: Map is not enclosed with walls at the last column");
+			error_exit("Error: Walls at the last column");
 		i++;
 	}
 }

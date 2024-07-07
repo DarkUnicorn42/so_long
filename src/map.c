@@ -12,7 +12,7 @@
 
 #include "../include/so_long.h"
 
-int set_height_width(int fd, t_game *game)
+int	set_height_width(int fd, t_game *game)
 {
 	char	*line;
 	int		width;
@@ -20,8 +20,11 @@ int set_height_width(int fd, t_game *game)
 
 	height = 0;
 	game->width = 0;
-	while ((line = get_next_line(fd)))
+	while (1)
 	{
+		line = get_next_line(fd);
+		if (!line)
+			break ;
 		width = ft_strlen(line) - 2;
 		if (line[width - 1] == '\n')
 			width--;
@@ -29,7 +32,6 @@ int set_height_width(int fd, t_game *game)
 			game->width = width;
 		else if (width != game->width)
 		{
-			printf("Mismatched line width: expected %d, got %d\n", game->width, width);
 			free(line);
 			return (-1);
 		}
@@ -40,10 +42,10 @@ int set_height_width(int fd, t_game *game)
 	return (0);
 }
 
-int get_map_dimensions(const char *file, t_game *game)
+int	get_map_dimensions(const char *file, t_game *game)
 {
-	int fd;
-	int result;
+	int	fd;
+	int	result;
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
@@ -70,8 +72,11 @@ int	parse_map(const char *file, t_game *game)
 	if (fd < 0)
 		error_exit("Error opening map file");
 	row = 0;
-	while ((line = get_next_line(fd)))
+	while (1)
 	{
+		line = get_next_line(fd);
+		if (!line)
+			break ;
 		game->map[row] = ft_strtrim(line, "\n");
 		if (!game->map[row])
 			error_exit("Error duplicating map line");

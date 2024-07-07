@@ -1,4 +1,14 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mwojtcza <mwojtcza@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/07 16:08:02 by mwojtcza          #+#    #+#             */
+/*   Updated: 2024/07/07 16:08:02 by mwojtcza         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../include/so_long.h"
 
@@ -15,10 +25,10 @@ int	close_window(t_game *game)
 	return (0);
 }
 
-void find_player_position(t_game *game, int *player_x, int *player_y)
+void	find_player_position(t_game *game, int *player_x, int *player_y)
 {
-	int y;
-	int x;
+	int	y;
+	int	x;
 
 	y = 0;
 	while (y < game->height)
@@ -30,7 +40,7 @@ void find_player_position(t_game *game, int *player_x, int *player_y)
 			{
 				*player_x = x;
 				*player_y = y;
-				return;
+				return ;
 			}
 			x++;
 		}

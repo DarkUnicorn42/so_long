@@ -44,11 +44,11 @@ void	render_map(t_game *game)
 	}
 }
 
-int handle_exit(t_game *game)
+int	handle_exit(t_game *game)
 {
 	if (game->collected_items == game->total_items)
 	{
-		printf("Congratulations! You collected all items and exited the game.\n");
+		printf("Congratulations! You win!\n");
 		mlx_destroy_window(game->mlx, game->win);
 		exit(0);
 	}
@@ -60,9 +60,9 @@ int handle_exit(t_game *game)
 	return (1);
 }
 
-void handle_move(t_game *game, int old_x, int old_y, int new_x, int new_y)
+void	handle_move(t_game *game, int old_x, int old_y, int new_x, int new_y)
 {
-	char tmp;
+	char	tmp;
 
 	tmp = game->map[new_y][new_x];
 	if (tmp != '1')
@@ -73,7 +73,7 @@ void handle_move(t_game *game, int old_x, int old_y, int new_x, int new_y)
 			game->map[new_y][new_x] = 'P';
 		}
 		else if (tmp == 'E' && !handle_exit(game))
-			return;
+			return ;
 		else
 			game->map[new_y][new_x] = 'P';
 		game->map[old_y][old_x] = '0';
@@ -83,10 +83,10 @@ void handle_move(t_game *game, int old_x, int old_y, int new_x, int new_y)
 	}
 }
 
-void move_player(t_game *game, int new_x, int new_y)
+void	move_player(t_game *game, int new_x, int new_y)
 {
-	int old_x;
-	int old_y;
+	int	old_x;
+	int	old_y;
 
 	find_player_position(game, &old_x, &old_y);
 	handle_move(game, old_x, old_y, new_x, new_y);

@@ -8,7 +8,9 @@ SOURCES = \
 	  ft_substr.c ft_strjoin.c ft_strtrim.c ft_strcpy.c ft_strcat.c \
 	  ft_split.c ft_itoa.c ft_strmapi.c ft_striteri.c ft_putchar_fd.c  \
 	  ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c \
-	  get_next_line.c 
+	  get_next_line.c \
+	  ft_printf.c ft_printfc.c ft_printfi.c ft_printfu.c \
+	  ft_printfi.c ft_printfstr.c ft_printfp.c ft_printfxx.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 
