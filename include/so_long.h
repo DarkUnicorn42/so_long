@@ -48,9 +48,9 @@ void	load_textures(t_game *game);
 int		key_press(int keycode, t_game *game);
 
 /* Graphics */
+void put_image_to_window(t_game *game, void *img, int x, int y);
 void	render_map(t_game *game);
-void	handle_move(t_game *game, int old_x, int old_y, int new_x, int new_y);
-void	move_player(t_game *game, int new_x, int new_y);
+void	handle_move(t_game *game, int new_x, int new_y);
 int		handle_exit(t_game *game);
 
 /* Map */
@@ -62,6 +62,7 @@ int		parse_map(const char *file, t_game *game);
 void	error_exit(const char *msg);
 int		close_window(t_game *game);
 void	find_player_position(t_game *game, int *player_x, int *player_y);
+int		process_line_width(char *line, t_game *game);
 
 /* Validation */
 void	count_in_row(char *row, int width, t_game *game);

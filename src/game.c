@@ -24,13 +24,13 @@ int	key_press(int keycode, t_game *game)
 		exit(0);
 	}
 	else if (keycode == 119)
-		move_player(game, player_x, player_y - 1);
+		handle_move(game, player_x, player_y - 1);
 	else if (keycode == 115)
-		move_player(game, player_x, player_y + 1);
+		handle_move(game, player_x, player_y + 1);
 	else if (keycode == 97)
-		move_player(game, player_x - 1, player_y);
+		handle_move(game, player_x - 1, player_y);
 	else if (keycode == 100)
-		move_player(game, player_x + 1, player_y);
+		handle_move(game, player_x + 1, player_y);
 	return (0);
 }
 

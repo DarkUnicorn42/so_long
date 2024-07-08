@@ -12,7 +12,12 @@
 
 #include "../include/so_long.h"
 
-void	render_map(t_game *game)
+void put_image_to_window(t_game *game, void *img, int x, int y)
+{
+	mlx_put_image_to_window(game->mlx, game->win, img, x * 100, y * 100);
+}
+
+void render_map(t_game *game)
 {
 	int	x;
 	int	y;
@@ -24,20 +29,20 @@ void	render_map(t_game *game)
 		while (x < game->width)
 		{
 			if (game->map[y][x] == '1')
-				mlx_put_image_to_window(game->mlx, game->win, game->img_wall, x * 100, y * 100);
+				put_image_to_window(game, game->img_wall, x, y);
 			else if (game->map[y][x] == '0')
-				mlx_put_image_to_window(game->mlx, game->win, game->img_floor, x * 100, y * 100);
+				put_image_to_window(game, game->img_floor, x, y);
 			else if (game->map[y][x] == 'C')
-				mlx_put_image_to_window(game->mlx, game->win, game->img_collect, x * 100, y * 100);
+				put_image_to_window(game, game->img_collect, x, y);
 			else if (game->map[y][x] == 'E')
 			{
 				if (game->collected_items == game->total_items)
-					mlx_put_image_to_window(game->mlx, game->win, game->img_exit_open, x * 100, y * 100);
+					put_image_to_window(game, game->img_exit_open, x, y);
 				else
-					mlx_put_image_to_window(game->mlx, game->win, game->img_exit, x * 100, y * 100);
+					put_image_to_window(game, game->img_exit, x, y);
 			}
 			else if (game->map[y][x] == 'P')
-				mlx_put_image_to_window(game->mlx, game->win, game->img_player, x * 100, y * 100);
+				put_image_to_window(game, game->img_player, x, y);
 			x++;
 		}
 		y++;
@@ -48,22 +53,25 @@ int	handle_exit(t_game *game)
 {
 	if (game->collected_items == game->total_items)
 	{
-		printf("Congratulations! You win!\n");
+		ft_printf("Congratulations! You win!\n");
 		mlx_destroy_window(game->mlx, game->win);
 		exit(0);
 	}
 	else
 	{
-		printf("You need to collect all items before exiting!\n");
+		ft_printf("You need to collect all items before exiting!\n");
 		return (0);
 	}
 	return (1);
 }
 
-void	handle_move(t_game *game, int old_x, int old_y, int new_x, int new_y)
+void	handle_move(t_game *game, int new_x, int new_y)
 {
-	char	tmp;
+	int old_x;
+	int old_y;
+	char tmp;
 
+	find_player_position(game, &old_x, &old_y);
 	tmp = game->map[new_y][new_x];
 	if (tmp != '1')
 	{
@@ -78,16 +86,7 @@ void	handle_move(t_game *game, int old_x, int old_y, int new_x, int new_y)
 			game->map[new_y][new_x] = 'P';
 		game->map[old_y][old_x] = '0';
 		game->move_count++;
-		printf("Moves: %d\n", game->move_count);
+		ft_printf("Moves: %d\n", game->move_count);
 		render_map(game);
 	}
-}
-
-void	move_player(t_game *game, int new_x, int new_y)
-{
-	int	old_x;
-	int	old_y;
-
-	find_player_position(game, &old_x, &old_y);
-	handle_move(game, old_x, old_y, new_x, new_y);
 }

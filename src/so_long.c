@@ -18,12 +18,12 @@ int	main(int argc, char **argv)
 
 	if (argc != 2)
 	{
-		write(2, "Usage: ./so_long map.ber\n", 25);
+		ft_printf("Usage: ./so_long map.ber\n");
 		return (1);
 	}
 	if (parse_map(argv[1], &game) == -1)
 	{
-		write(2, "Error: Invalid map\n", 19);
+		ft_printf("Error: Invalid map\n");
 		return (1);
 	}
 	init_game(&game);
