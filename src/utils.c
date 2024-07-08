@@ -49,9 +49,9 @@ void	find_player_position(t_game *game, int *player_x, int *player_y)
 	error_exit("Error: Player position not found");
 }
 
-int process_line_width(char *line, t_game *game)
+int	process_line_width(char *line, t_game *game)
 {
-	int width;
+	int	width;
 
 	width = ft_strlen(line) - 2;
 	if (line[width - 1] == '\n')

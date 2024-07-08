@@ -52,7 +52,6 @@ compile_dep:
 $(NAME): compile_dep $(OBJS)
 	$(CC) $(CFLAGS) $(MLXFLAGSN) $(OBJS) libft.a libmlx.a libmlx_Linux.a -o $(NAME)
 
-
 clean:
 	rm -f $(OBJS)
 	@make -C $(LIBFT_DIR) clean

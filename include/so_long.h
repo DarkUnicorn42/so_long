@@ -52,6 +52,7 @@ void	put_image_to_window(t_game *game, void *img, int x, int y);
 void	render_map(t_game *game);
 void	handle_move(t_game *game, int new_x, int new_y);
 int		handle_exit(t_game *game);
+void	exit_close_open(t_game *game, int x, int y);
 
 /* Map */
 int		set_height_width(int fd, t_game *game);

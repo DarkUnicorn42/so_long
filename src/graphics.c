@@ -12,12 +12,20 @@
 
 #include "../include/so_long.h"
 
-void put_image_to_window(t_game *game, void *img, int x, int y)
+void	put_image_to_window(t_game *game, void *img, int x, int y)
 {
 	mlx_put_image_to_window(game->mlx, game->win, img, x * 100, y * 100);
 }
 
-void render_map(t_game *game)
+void	exit_close_open(t_game *game, int x, int y)
+{
+	if (game->collected_items == game->total_items)
+		put_image_to_window(game, game->img_exit_open, x, y);
+	else
+		put_image_to_window(game, game->img_exit, x, y);
+}
+
+void	render_map(t_game *game)
 {
 	int	x;
 	int	y;
@@ -35,12 +43,7 @@ void render_map(t_game *game)
 			else if (game->map[y][x] == 'C')
 				put_image_to_window(game, game->img_collect, x, y);
 			else if (game->map[y][x] == 'E')
-			{
-				if (game->collected_items == game->total_items)
-					put_image_to_window(game, game->img_exit_open, x, y);
-				else
-					put_image_to_window(game, game->img_exit, x, y);
-			}
+				exit_close_open(game, x, y);
 			else if (game->map[y][x] == 'P')
 				put_image_to_window(game, game->img_player, x, y);
 			x++;
@@ -67,9 +70,9 @@ int	handle_exit(t_game *game)
 
 void	handle_move(t_game *game, int new_x, int new_y)
 {
-	int old_x;
-	int old_y;
-	char tmp;
+	int		old_x;
+	int		old_y;
+	char	tmp;
 
 	find_player_position(game, &old_x, &old_y);
 	tmp = game->map[new_y][new_x];
